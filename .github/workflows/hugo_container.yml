@@ -50,6 +50,6 @@ jobs:
 
           push: ${{ github.event_name != 'pull_request' }}
           context: .
-          file: ./hugo.dockerfile
+          file: ./dockerfiles/hugo.dockerfile
           tags: ${{ github.event.inputs.docker_tag || steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
