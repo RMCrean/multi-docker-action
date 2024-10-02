@@ -37,11 +37,11 @@ jobs:
         id: set-tag
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "::set-output name=tag::${{ github.event.inputs.docker_tag }}";
+            echo "tag=${{ github.event.inputs.docker_tag }}" >> $GITHUB_OUTPUT;
           elif [ "${{ github.ref }}" == "refs/heads/prod" ]; then
-            echo "::set-output name=tag::prod";
+            echo "tag=prod" >> $GITHUB_OUTPUT;
           elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            echo "::set-output name=tag::main";
+            echo "tag=main" >> $GITHUB_OUTPUT;
           fi
 
       - name: Create Docker metadata
@@ -51,6 +51,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
+          push: ${{ github.event_name != 'pull_request' }}
           context: .
-          push: true
-          tags: ghcr.io/${{ github.repository }}:${{ steps.set-tag.outputs.tag }}
+          file: ./dockerfiles/hugo.dockerfile
+          tags: ghcr.io/rmcrean/multi-docker-action:${{ steps.set-tag.outputs.tag }}
