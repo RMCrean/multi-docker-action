@@ -8,8 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       docker_tag:
-        description: 'Docker tag for the image'
+        description: 'Docker tag for the image, default is main'
         required: false
+        default: 'main'
 
 jobs:
   push-to-container-registry:
