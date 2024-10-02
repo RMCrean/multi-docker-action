@@ -1,16 +1,10 @@
 name: Build and push image to GitHub Container Registry
 on:
   push:
-    tags:
-      - 'v*.*.*' # i.e. has to have a release tag to run 
+    branches:
+      - main # aka dev 
+      - prod # aka prod
       
-  # if run as workflow_dispatch, these tags can be used in build+push step
-  workflow_dispatch:
-    inputs:
-      docker_tag:
-        description: 'Docker tag for the image'
-        required: false
-
 jobs:
   push-to-container-registry:
     if: github.repository == 'RMCrean/multi-docker-action'  
@@ -37,19 +31,13 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/rmcrean/hugo-site
-          flavor: |
-            latest=auto
-          tags: |
-            type=ref,event=branch
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+
         
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-
           push: ${{ github.event_name != 'pull_request' }}
           context: .
           file: ./dockerfiles/hugo.dockerfile
-          tags: ${{ github.event.inputs.docker_tag || steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
