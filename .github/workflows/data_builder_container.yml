@@ -1,14 +1,14 @@
-name: Build and push data builder docker image to GitHub Container Registry
+name: Build and push image to GitHub Container Registry
 on:
   push:
-    tags:
-      - 'v*.*.*' # i.e. has to have a release tag to run 
+    branches:
+      - prod # aka prod/stable
+      - main # aka dev
       
-  # if run as workflow_dispatch, these tags can be used in build+push step
   workflow_dispatch:
     inputs:
       docker_tag:
-        description: 'Docker tag for the image, default is main'
+        description: 'Docker tag for the image, default is dev'
         required: false
         default: 'main'
 
@@ -33,24 +33,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/rmcrean/data-builder
-          flavor: |
-            latest=auto
-          tags: |
-            type=ref,event=branch
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+      - name: Set Docker tag
+        id: set-tag
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.docker_tag }}" >> $GITHUB_OUTPUT;
+          elif [ "${{ github.ref }}" == "refs/heads/prod" ]; then
+            echo "tag=prod" >> $GITHUB_OUTPUT;
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "tag=dev" >> $GITHUB_OUTPUT;
+          fi
         
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-
           push: ${{ github.event_name != 'pull_request' }}
           context: .
           file: ./dockerfiles/data.dockerfile
-          tags: ${{ github.event.inputs.docker_tag || steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ghcr.io/rmcrean/swg-data-builder:${{ steps.set-tag.outputs.tag }}
