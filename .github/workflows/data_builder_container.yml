@@ -10,7 +10,7 @@ on:
       docker_tag:
         description: 'Docker tag for the image, default is dev'
         required: false
-        default: 'main'
+        default: 'dev'
 
 jobs:
   push-to-container-registry:
