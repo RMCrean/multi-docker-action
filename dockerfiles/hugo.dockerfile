@@ -2,7 +2,7 @@
 FROM alpine:3.19.1 AS build
 RUN apk add --no-cache wget=1.21.4-r0
 ARG HUGO_VERSION="0.123.7"
- # GH actions runs will overwrite HUGO_ENV_ARG 
+# GH actions runs will overwrite HUGO_ENV_ARG 
 ARG HUGO_ENV_ARG="Local dev build"
 RUN wget --quiet "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_Linux-64bit.tar.gz" && \
     tar xzf hugo_${HUGO_VERSION}_Linux-64bit.tar.gz && \
@@ -12,7 +12,7 @@ RUN wget --quiet "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VER
 WORKDIR /src
 COPY ./hugo/ /src
 RUN mkdir /target && \
-    hugo -d /target --minify -e ${HUGO_ENV_ARG} 
+    hugo -d /target --minify -e "${HUGO_ENV_ARG}"
 
 # Serve the generated html using nginx
 FROM nginxinc/nginx-unprivileged:alpine
