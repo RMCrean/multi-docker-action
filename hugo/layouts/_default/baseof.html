@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        {{- partial "head.html" . -}}
+    <body class="d-flex flex-column min-vh-100">
+
+        <main>
+            <div class="container" id="content">
+
+                {{- block "main" . }}{{- end }}
+
+            </div>
+        </main>
+    </body>
+
+    <footer>
+        {{- partial "footer.html" . -}}
+    </footer>
+</html>

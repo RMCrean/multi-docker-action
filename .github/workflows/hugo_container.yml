@@ -2,9 +2,14 @@ name: Build and push image to GitHub Container Registry
 on:
   push:
     branches:
-      - prod # aka prod/stable
-      - main # aka dev
-      
+      - main # push to main gives dev tagged docker image
+  
+  # Triggered when a release is published
+  # Docker image tagged as prod
+  release:
+      types: [published]
+  
+  # Triggered manually
   workflow_dispatch:
     inputs:
       docker_tag:
@@ -51,3 +56,9 @@ jobs:
           context: .
           file: ./dockerfiles/hugo.dockerfile
           tags: ghcr.io/rmcrean/swg-hugo-site:${{ steps.set-tag.outputs.tag }}
+          build-args: |
+            HUGO_ENV_ARG=${
+              { github.event_name == 'release' && format('{0},{1}', 'release', github.ref_name) } ||
+              { github.ref_name == 'main' && format('{0},{1}', 'development', github.sha) } ||
+              { format('{0},{1}', github.ref_name, github.sha) }
+            }
