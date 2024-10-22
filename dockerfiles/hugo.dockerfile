@@ -12,7 +12,7 @@ RUN wget --quiet "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VER
 WORKDIR /src
 COPY ./hugo/ /src
 RUN mkdir /target && \
-    hugo -d /target --minify -e "${HUGO_ENV_ARG}" 
+    hugo -d /target --minify -e ${HUGO_ENV_ARG} 
 
 # Serve the generated html using nginx
 FROM nginxinc/nginx-unprivileged:alpine
