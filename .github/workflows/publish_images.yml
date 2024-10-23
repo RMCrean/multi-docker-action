@@ -1,4 +1,4 @@
-name: Build and push Hugo and data builder images to the GitHub Container Registry
+name: Build and push both images to the GitHub Container Registry
 on:
   push:
     branches:
@@ -20,7 +20,7 @@ on:
 jobs:
   push-to-container-registry:
     if: github.repository == 'RMCrean/multi-docker-action'  
-    name: Build and push Hugo site Docker image to GitHub Container Registry
+    name: Build and push both images to the GitHub Container Registry
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -28,8 +28,11 @@ jobs:
 
     strategy:
       matrix:
-        dockerfile: [hugo.dockerfile, data.dockerfile]
-        image_name: [swg-hugo-site, swg-data-builder]
+        include:
+          - dockerfile: hugo.dockerfile
+            image_name: swg-hugo-site
+          - dockerfile: data.dockerfile
+            image_name: swg-data-builder
         
     steps:
       - name: Check out the repo
