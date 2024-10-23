@@ -2,14 +2,20 @@
 
     <hr style="margin-top: 0; padding-top: 0;">
 
+    <!-- Split between portal version info and JBrowse version info -->
+    {{ $envInfo := split hugo.Environment "|" }}
+    {{ $portalInfo := index $envInfo 0 }}
+    {{ $jBrowseVersion := index $envInfo 1 }}
+
     <!-- GH action triggered build -->
-    {{ if strings.Contains hugo.Environment "," }}
-        {{ $envInfo := split hugo.Environment "," }}
-        {{ $deploymentType := index $envInfo 0 }}
+    {{ if strings.Contains $portalInfo "," }}
+        
+        {{ $portalEnvInfo := split $portalInfo "," }}
+        {{ $deploymentType := index $portalEnvInfo 0 }}
 
         <!-- GH action triggered by release -->
         {{ if eq $deploymentType "release" }}
-            {{ $versionNumb := index $envInfo 1 }}
+            {{ $versionNumb := index $portalEnvInfo 1 }}
                 <p class="mt-2 mb-0 text-start text-lg-center">
                     <i> Last Updated: {{ now.Format "02 January 2006"}} </i>
                     (<a href="https://github.com/RMCrean/multi-docker-action/tree/{{ $versionNumb }}" 
@@ -19,7 +25,7 @@
         
         <!-- GH action build on a push to main aka dev -->
         {{ else if eq $deploymentType "development" }}
-            {{ $gitShaFull := index $envInfo 1 }}
+            {{ $gitShaFull := index $portalEnvInfo 1 }}
             {{ $gitShaShort := substr $gitShaFull 0 7 }}
                 <p class="mt-2 mb-0 text-start text-lg-center">
                     <i> Last Updated: {{ now.Format "02 January 2006"}} </i>
@@ -31,7 +37,7 @@
         <!-- GH action build on a feature branch -->
         {{ else }}
             {{ $featureBranch := $deploymentType }}
-            {{ $gitShaFull := index $envInfo 1 }}
+            {{ $gitShaFull := index $portalEnvInfo 1 }}
             {{ $gitShaShort := substr $gitShaFull 0 7 }}
             <p class="mt-2 mb-0 text-start text-lg-center">
                 <i> Last Updated: {{ now.Format "02 January 2006"}} </i>
@@ -50,5 +56,13 @@
                 rel="noopener noreferrer">Local dev build</a>)
         </p>
     {{ end }}
+
+
+    {{ if $jBrowseVersion }}
+        <p class="mt-2 mb-0 text-start text-lg-center">
+            <i> JBrowse Version: {{ $jBrowseVersion }} </i>
+        </p>
+    {{ end }}
+
 
 </footer>
