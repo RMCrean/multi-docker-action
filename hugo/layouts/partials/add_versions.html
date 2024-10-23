@@ -20,22 +20,19 @@
         {{ $portalHref = printf "%s/tree/%s" $githubURL $versionNumb }}
         {{ $hrefText = $versionNumb }}
 
-    <!-- GH action build on a push to main aka dev -->
-    {{ else if eq $deploymentType "development" }}
-        {{ $gitShaFull := index $portalEnvInfo 1 }}
-        {{ $gitShaShort := substr $gitShaFull 0 7 }}
-
-        {{ $portalHref = printf "%s/commit/%s" $gitShaFull }}
-        {{ $hrefText = printf "Built from commit: %s" $gitShaShort }}
-
-    <!-- GH action build on a feature branch -->
     {{ else }}
-        {{ $featureBranch := $deploymentType }}
         {{ $gitShaFull := index $portalEnvInfo 1 }}
         {{ $gitShaShort := substr $gitShaFull 0 7 }}
+        {{ $portalHref = printf "%s/commit/%s" $githubURL $gitShaFull }}
 
-        {{ $portalHref = printf "%s/commit/%s" $gitShaFull }}
-        {{ $hrefText = printf "Built from commit: %s on branch: %s" $gitShaShort $featureBranch }}
+        <!-- GH action build on a push to main aka dev -->
+        {{ if eq $deploymentType "development" }}
+            {{ $hrefText = printf "Built from commit: %s" $gitShaShort }}
+        <!-- GH action build on a feature branch -->
+        {{ else }}
+            {{ $featureBranch := $deploymentType }}
+            {{ $hrefText = printf "Built from commit: %s on branch: %s" $gitShaShort $featureBranch }}
+        {{ end }}
     {{ end }}
 
 <!-- local build -->
