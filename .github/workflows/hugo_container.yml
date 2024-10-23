@@ -41,12 +41,12 @@ jobs:
       - name: Set Docker tag
         id: set-tag
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "tag=${{ github.event.inputs.docker_tag }}" >> $GITHUB_OUTPUT;
-          elif [ "${{ github.ref }}" == "refs/heads/prod" ]; then
+          if [ "${{ github.event_name }}" == "release" ]; then
             echo "tag=prod" >> $GITHUB_OUTPUT;
           elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
             echo "tag=dev" >> $GITHUB_OUTPUT;
+          elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.docker_tag }}" >> $GITHUB_OUTPUT;
           fi
 
       - name: Build and push Docker image
