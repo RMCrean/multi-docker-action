@@ -9,4 +9,4 @@ def test_home_page_title(page: Page, base_url: str):
     Validate home page title
     """
     page.goto(base_url)
-    assert page.title() == "Not Hello world"
+    assert page.title() == "Hello world"

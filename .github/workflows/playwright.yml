@@ -7,11 +7,14 @@ jobs:
     timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -20,19 +23,10 @@ jobs:
     - name: Ensure browsers are installed
       run: python -m playwright install --with-deps
     
-    # Build the Docker image
-    - name: Build Docker image
-      run: docker build -f dockerfiles/hugo.dockerfile -t hugo-playwright .
-  
-    # Run the Docker container
-    - name: Run Docker container
-      run: docker run -d -p 8080:8080 --name hugo-container hugo-playwright  
+    - name: Build and run the Hugo docker image
+      run: | 
+        docker build -f dockerfiles/hugo.dockerfile -t hugo-playwright .
+        docker run -d -p 8080:8080 --name hugo-container hugo-playwright  
 
-
-    - name: Run your tests
-      run: pytest playwright/tests/ --base-url http://localhost:8080 --tracing=retain-on-failure
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-traces
-        path: test-results/
+    - name: Run playwright tests
+      run: pytest playwright/tests/ --base-url http://localhost:8080 
