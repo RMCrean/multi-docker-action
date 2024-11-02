@@ -18,14 +18,9 @@
 <!-- GH action build on a push to main aka dev -->
 {{ else if eq $branch "main" }}
     {{ $gitShaShort := substr $gitSha 0 7 }}
-    {{ $portalHref = printf "%s/commit/%s" $githubURL $gitSha }}
-    {{ $hrefText = printf "Built
-    <!-- Portal version info -->
-    <p class="mt-2 mb-0 text-start text-lg-center">
-        <i> Website last updated: {{ now.Format "02 January 2006"}} </i>
-        (<a href="{{ $portalHref }}" target="_blank" rel="noopener noreferrer">{{ $hrefText }}</a>)
-    </p>
-     from commit: %s" $gitShaShort }}
+    {{ $portalHref = printf "%s/commit/%s" $giRUN mkdir /target && \
+    hugo -d /target --minify -e "${ENV_INFO}"thubURL $gitSha }}
+    {{ $hrefText = printf "Built from commit: %s" $gitShaShort }}
 
 <!-- GH action build on a feature branch -->
 {{ else if ne $branch "" }}
