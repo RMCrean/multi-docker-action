@@ -18,8 +18,7 @@
 <!-- GH action build on a push to main aka dev -->
 {{ else if eq $branch "main" }}
     {{ $gitShaShort := substr $gitSha 0 7 }}
-    {{ $portalHref = printf "%s/commit/%s" $giRUN mkdir /target && \
-    hugo -d /target --minify -e "${ENV_INFO}"thubURL $gitSha }}
+    {{ $portalHref = printf "%s/commit/%s" $githubURL $gitSha }}
     {{ $hrefText = printf "Built from commit: %s" $gitShaShort }}
 
 <!-- GH action build on a feature branch -->
