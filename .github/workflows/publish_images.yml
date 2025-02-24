@@ -51,7 +51,8 @@ jobs:
           if [ "${{ github.event_name }}" == "release" ]; then
             echo "tag=prod" >> $GITHUB_OUTPUT;
           elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            echo "tag=dev" >> $GITHUB_OUTPUT;
+            echo "value of input without input: ${{ github.event.inputs.docker_tag }}";
+            echo "tag=${{ github.event.inputs.docker_tag }}" >> $GITHUB_OUTPUT;
           elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             echo "tag=${{ github.event.inputs.docker_tag }}" >> $GITHUB_OUTPUT;
           fi
