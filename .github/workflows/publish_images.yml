@@ -49,11 +49,11 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" == "release" ]; then
             echo "tag=testing" >> $GITHUB_OUTPUT;
-          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            echo "tag=testing" >> $GITHUB_OUTPUT;
           elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             echo "value of docker_tag is: ${{ github.event.inputs.docker_tag }}"
             echo "tag=${{ github.event.inputs.docker_tag }}" >> $GITHUB_OUTPUT;
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "tag=testing" >> $GITHUB_OUTPUT;
           fi
 
       - name: Set enviroment variable for hugo build command
