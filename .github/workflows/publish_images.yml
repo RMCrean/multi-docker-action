@@ -15,7 +15,6 @@ on:
       docker_tag:
         description: 'Docker tag for the images, default is dev'
         required: false
-        default: 'dev'
       
 jobs:
   push-to-container-registry:
@@ -49,12 +48,11 @@ jobs:
         id: set-tag
         run: |
           if [ "${{ github.event_name }}" == "release" ]; then
-            echo "value of input: ${{ github.event.inputs.docker_tag }}
-            echo "tag=${{ github.event.inputs.docker_tag }}" >> $GITHUB_OUTPUT;
+            echo "tag=testing" >> $GITHUB_OUTPUT;
           elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            echo "value of input: ${{ github.event.inputs.docker_tag }}
-            echo "tag=${{ github.event.inputs.docker_tag }}" >> $GITHUB_OUTPUT;
+            echo "tag=testing" >> $GITHUB_OUTPUT;
           elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "value of docker_tag is: ${{ github.event.inputs.docker_tag }}"
             echo "tag=${{ github.event.inputs.docker_tag }}" >> $GITHUB_OUTPUT;
           fi
 
